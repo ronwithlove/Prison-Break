@@ -6,7 +6,8 @@ public enum AnimationState{
 	Run,
 	TurnLeft,
 	TurnRight,
-	Slide
+	Slide,
+	Jump
 }
 
 public class PlayerAnimation : MonoBehaviour {
@@ -36,6 +37,9 @@ public class PlayerAnimation : MonoBehaviour {
 			if(playerMove.isSliding){
 				animState=AnimationState.Slide;
 			}
+			if(playerMove.isJumping){
+				animState=AnimationState.Jump;
+			}
 		}
 	}
 
@@ -49,8 +53,8 @@ public class PlayerAnimation : MonoBehaviour {
 		case AnimationState.TurnRight:
 			GetComponentInChildren<Animation>()["right"].speed=2;//这里如果3倍的话会循环播放， 因为原本动画时间没结束
 			PlayAnim("right");break;
-		case AnimationState.Slide:
-			PlayAnim ("slide");break;
+		case AnimationState.Slide:PlayAnim ("slide");break;
+		case AnimationState.Jump:PlayAnim ("jump");break;
 		}
 
 	}
