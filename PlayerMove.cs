@@ -80,7 +80,6 @@ public class PlayerMove : MonoBehaviour {
 			if(isUp){ //跳起				
 				prisoner.position=new Vector3(prisoner.position.x,prisoner.position.y+yMove,prisoner.position.z);
 				jumppedHeight+=yMove;
-				print (prisoner.position.y);
 				if(jumpHeight-jumppedHeight<0f){//把绝对值去了，因为小于0之后变负的，但是绝度值一下又正了，于是越跳越高
 					isUp=false;//说明最高点了，可以下落了。
 				}

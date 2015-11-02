@@ -7,13 +7,14 @@ public enum AnimationState{
 	TurnLeft,
 	TurnRight,
 	Slide,
-	Jump
+	Jump,
+	Death
 }
 
 public class PlayerAnimation : MonoBehaviour {
 
 	private Animation playerAnim;
-	private AnimationState animState=AnimationState.Idle;
+	public AnimationState animState=AnimationState.Idle;//改成public PlayerBigCollider要用
 	private PlayerMove playerMove; //要持有一个PlayerMove的引用，定义一个
 
 
@@ -40,6 +41,8 @@ public class PlayerAnimation : MonoBehaviour {
 			if(playerMove.isJumping){
 				animState=AnimationState.Jump;
 			}
+		}else if(GameController.gameState==GameState.End){
+			animState=AnimationState.Death;
 		}
 	}
 
@@ -48,13 +51,14 @@ public class PlayerAnimation : MonoBehaviour {
 		case AnimationState.Idle:PlayIdle();	break;
 		case AnimationState.Run:PlayAnim("run");break;
 		case AnimationState.TurnLeft:
-			GetComponentInChildren<Animation>()["left"].speed=2;//倍数，2倍速度播放
+			GetComponentInChildren<Animation>()["left"].speed=2;//倍数，2倍速度播放 ，负值为倒带。。
 			PlayAnim("left");break;
 		case AnimationState.TurnRight:
 			GetComponentInChildren<Animation>()["right"].speed=2;//这里如果3倍的话会循环播放， 因为原本动画时间没结束
 			PlayAnim("right");break;
 		case AnimationState.Slide:PlayAnim ("slide");break;
 		case AnimationState.Jump:PlayAnim ("jump");break;
+		case AnimationState.Death: PlayDeath();break;
 		}
 
 	}
@@ -73,4 +77,11 @@ public class PlayerAnimation : MonoBehaviour {
 		}
 	}
 
+	private bool isPlayDeath=false;//还未播放过Death动画
+	private void PlayDeath(){
+		if(!playerAnim.IsPlaying("Death")&&isPlayDeath==false){//1.没有正在播放这个动画，2.动画还未播过//!playerAnim.IsPlaying("Death")可以不用
+			playerAnim.Play ("death");
+			isPlayDeath=true;
+		}
+	}
 }
