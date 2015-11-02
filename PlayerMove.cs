@@ -18,6 +18,10 @@ public class PlayerMove : MonoBehaviour {
 	private Vector3 lastMouseDown=Vector3.zero;
 	public int currentTrack=1; //当前赛道 ,设成 public在PlayerAnimation要作为判断用
 	public int targetTrack=1; //目标赛道
+	public bool isSliding= false;
+	public float slideTime=1.4f;//这里是动画时间，在Animation 里有
+
+	private float slideTimer=0;//滑动计时器
 	private float moveDistance=0;
 	private float[] wayPointOffset=new float[3]{-14,0,14};
 //	private Forest forest;
@@ -57,9 +61,13 @@ public class PlayerMove : MonoBehaviour {
 				currentTrack=targetTrack;//移动结束，现在的跑道就是目标跑道；
 			}
 		}
-
-
-
+		if(isSliding){
+			slideTimer+=Time.deltaTime;
+			if(slideTimer>slideTime){//如果时间到了，停止播放 这里别写等于，因为是float所以很难刚好精确的等于，大于就好了
+				slideTimer=0;
+				isSliding=false;
+			}
+		}
 	}
 
 	TouchDir GetTouchDir(){
@@ -76,7 +84,7 @@ public class PlayerMove : MonoBehaviour {
 						targetTrack++;
 						moveDistance=14;
 					}
-					return TouchDir.Right;
+					return  TouchDir.Right;
 				}else if(Mathf.Abs(touchOffset.x)>Mathf.Abs(touchOffset.y)&&touchOffset.x<0){ //x小于0么就是左边了。
 					if(targetTrack>0){
 						targetTrack--;
@@ -86,6 +94,8 @@ public class PlayerMove : MonoBehaviour {
 				}else if(Mathf.Abs(touchOffset.x)<Mathf.Abs(touchOffset.y)&&touchOffset.y>0){
 					return TouchDir.Up;
 				}else if(Mathf.Abs(touchOffset.x)<Mathf.Abs(touchOffset.y)&&touchOffset.y<0){ 
+					isSliding=true;
+					slideTimer=0;
 					return TouchDir.Down;
 				}//这里也不用写等于的情况，随便划一下X=Y的也是牛了。当然若要写，就等于的时候往上滑好了
 			}
